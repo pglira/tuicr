@@ -400,3 +400,42 @@ fn compact_folders_startup_keeps_selection_on_current_file() {
         matches!(app.get_selected_tree_item(), Some(FileTreeItem::File { file_idx, .. }) if file_idx == current_file_idx)
     );
 }
+
+#[test]
+fn file_list_hidden_for_narrow_width_returns_when_wider() {
+    let mut app = app_with(&["src/a.rs"]);
+    app.focused_panel = FocusedPanel::FileList;
+
+    app.fit_file_list_to_width(80, 100);
+    assert!(!app.show_file_list);
+    assert_eq!(app.focused_panel, FocusedPanel::Diff);
+
+    app.fit_file_list_to_width(90, 100);
+    assert!(!app.show_file_list);
+
+    app.fit_file_list_to_width(120, 100);
+    assert!(app.show_file_list);
+}
+
+#[test]
+fn file_list_hidden_by_user_stays_hidden_when_wider() {
+    let mut app = app_with(&["src/a.rs"]);
+    app.toggle_file_list();
+    assert!(!app.show_file_list);
+
+    app.fit_file_list_to_width(80, 100);
+    app.fit_file_list_to_width(120, 100);
+    assert!(!app.show_file_list);
+}
+
+#[test]
+fn file_list_toggled_off_while_narrow_stays_hidden_when_wider() {
+    let mut app = app_with(&["src/a.rs"]);
+    app.fit_file_list_to_width(80, 100);
+    app.toggle_file_list();
+    app.toggle_file_list();
+    assert!(!app.show_file_list);
+
+    app.fit_file_list_to_width(120, 100);
+    assert!(!app.show_file_list);
+}

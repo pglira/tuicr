@@ -1732,6 +1732,7 @@ fn handle_shared_normal_action(app: &mut App, action: Action) {
         Action::QuitHint => app.set_message(QUIT_HINT_MESSAGE),
         Action::ExitMode => {
             app.show_file_list = false;
+            app.file_list_hidden_for_width = false;
             app.focused_panel = FocusedPanel::Diff;
         }
         Action::HalfPageDown => app.page_down(app.diff_state.viewport_height / 2),

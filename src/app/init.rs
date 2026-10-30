@@ -584,6 +584,7 @@ impl App {
             pending_confirm: None,
             supports_keyboard_enhancement: false,
             show_file_list: true,
+            file_list_hidden_for_width: false,
             compact_folders: false,
             is_pristine_mode: false,
             is_single_file_view: false,

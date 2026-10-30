@@ -408,11 +408,8 @@ fn main() -> anyhow::Result<()> {
     }
 
     // On narrow terminals, start with only the diff panel visible.
-    if let Ok((width, _)) = crossterm::terminal::size()
-        && width < MIN_WIDTH_FOR_FILE_LIST
-    {
-        app.show_file_list = false;
-        app.focused_panel = FocusedPanel::Diff;
+    if let Ok((width, _)) = crossterm::terminal::size() {
+        app.fit_file_list_to_width(width, MIN_WIDTH_FOR_FILE_LIST);
     }
 
     if let Some(message) = preferred_startup_warning(&startup_warnings) {
@@ -868,6 +865,9 @@ fn main() -> anyhow::Result<()> {
                     }
                 }
                 Event::Mouse(mouse_event) => handle_mouse_event(&mut app, mouse_event),
+                Event::Resize(width, _) => {
+                    app.fit_file_list_to_width(width, MIN_WIDTH_FOR_FILE_LIST);
+                }
                 Event::Paste(text) => {
                     // Bracketed-paste payload — route to whichever handler is
                     // currently accepting text input. Other modes ignore.

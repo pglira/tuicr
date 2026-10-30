@@ -1355,6 +1355,10 @@ pub struct App {
     pub pending_confirm: Option<ConfirmAction>,
     pub supports_keyboard_enhancement: bool,
     pub show_file_list: bool,
+    /// `true` while the file list is hidden only because the terminal is
+    /// narrower than the minimum width. A wider terminal shows it again;
+    /// an explicit toggle clears the flag.
+    pub file_list_hidden_for_width: bool,
     pub compact_folders: bool,
     /// `true` when the session was opened via `--all-files`. Drives the
     /// `PRISTINE · N files` chip in the status bar and prevents that chip

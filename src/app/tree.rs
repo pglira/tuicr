@@ -96,6 +96,7 @@ impl App {
 
     pub fn toggle_file_list(&mut self) {
         self.show_file_list = !self.show_file_list;
+        self.file_list_hidden_for_width = false;
         if !self.show_file_list
             && matches!(
                 self.focused_panel,
@@ -110,6 +111,27 @@ impl App {
             "hidden"
         };
         self.set_message(format!("File list: {status}"));
+    }
+
+    /// Hide the file list when `width` is below `min_width`, and show it
+    /// again once `width` reaches `min_width`, but only if the width was
+    /// the reason it was hidden.
+    pub fn fit_file_list_to_width(&mut self, width: u16, min_width: u16) {
+        if width < min_width {
+            if self.show_file_list {
+                self.show_file_list = false;
+                self.file_list_hidden_for_width = true;
+                if matches!(
+                    self.focused_panel,
+                    FocusedPanel::FileList | FocusedPanel::Comments
+                ) {
+                    self.focused_panel = FocusedPanel::Diff;
+                }
+            }
+        } else if self.file_list_hidden_for_width {
+            self.show_file_list = true;
+            self.file_list_hidden_for_width = false;
+        }
     }
 
     /// Toggle single-file view. When on, the diff panel renders only the
